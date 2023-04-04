@@ -80,7 +80,7 @@ public class ChipParser
                 string name = manyMatch.Groups["Name"].Value;
                 for (int i = 0; i < count; i++)
                 {
-                    wires.Add($"_{i}{name}");
+                    wires.Add(name + i);
                 }
             }
             else

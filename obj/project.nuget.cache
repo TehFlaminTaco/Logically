@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GU55L2Ytnan+1Se9dEa9FShP82rBWE6YYNfrZb/GjEXpKTMn/DomLON2y9zaRmaq/dMQgDJHpfNd62/lxxRGXw==",
+  "dgSpecHash": "bYXAA8ks/avl2ElPxuzJZbGDiCCxgY/X2w8rWUpA2RPP1qdf9Wvnc2usMWs4RvF1bTm+ws3Xqj9EH2Og9rq6lg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Willi\\Desktop\\Logically\\main.csproj",
+  "projectFilePath": "/home/runner/Logically/main.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

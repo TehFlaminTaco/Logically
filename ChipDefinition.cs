@@ -35,7 +35,7 @@ public class ChipDefinition
         List<bool> outputs = new();
         for (var i = 0; i < Outputs.Count; i++)
         {
-            outputs.Add(instance.NewWireStates[Outputs[i]]);
+            outputs.Add(instance.NewWireStates[ChipInstance.RemoveHigh(Outputs[i])]);
         }
         return outputs;
     }
@@ -174,6 +174,37 @@ public class CopyChip : ChipDefinition
     public CopyChip() : base("COPY") { }
     public override List<bool> Think(ChipInstance instance, List<bool> inputs)
     {
-        return inputs;
+        return inputs.ToList();
     }
+}
+
+public class CellChip : ChipDefinition
+{
+    public CellChip() : base("CELL") { }
+    public override List<bool> Think(ChipInstance instance, List<bool> inputs)
+    {
+        for (var i = 1; i < inputs.Count; i++)
+        {
+            if (!instance.WireStates.ContainsKey("d" + i))
+            {
+                instance.WireStates["d" + i] = false;
+                instance.NewWireStates["d" + i] = false;
+            }
+        }
+        if (inputs.Count > 0 && inputs[0])
+        {
+            for (var i = 1; i < inputs.Count; i++)
+            {
+                instance.NewWireStates["d" + i] = inputs[i];
+            }
+        }
+        List<bool> outputs = new();
+        int j = 1;
+        while (instance.NewWireStates.ContainsKey("d" + j))
+        {
+            outputs.Add(instance.NewWireStates["d" + j++]);
+        }
+        return outputs;
+    }
+
 }

@@ -10,28 +10,30 @@ class Program
     public static bool Running = true;
     public static void Main(string[] args)
     {
-        _=new NotChip();
-        _=new OrChip();
-        _=new AndChip();
-        _=new XorChip();
-        _=new HaltChip();
-        _=new ReadChip();
-        _=new WriteChip();
-        _=new CopyChip();
+        _ = new NotChip();
+        _ = new OrChip();
+        _ = new AndChip();
+        _ = new XorChip();
+        _ = new HaltChip();
+        _ = new ReadChip();
+        _ = new WriteChip();
+        _ = new CopyChip();
+        _ = new CellChip();
 
         var mainChip = ChipParser.ParseChips(
           System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes("test.l"))
         );
-        Console.WriteLine(mainChip);
+        Console.Error.WriteLine(mainChip);
         ChipInstance inst = new(mainChip);
         int loops = 0;
         while (Running)
         {
             loops++;
-            inst.Parent.Think(inst, new());
+            if (loops > 6000) break;
             inst.Swap();
+            inst.Parent.Think(inst, new());
         }
-        Console.WriteLine(inst);
-        Console.WriteLine($"Finished after {loops} ticks!");
+        Console.Error.WriteLine(inst);
+        Console.Error.WriteLine($"Finished after {loops} ticks!");
     }
 }

@@ -15,15 +15,25 @@ public class ChipInstance
     public ChipInstance(ChipDefinition parent)
     {
         Parent = parent;
-        parent.Inputs.ForEach(c => NewWireStates[c] = false);
-        parent.Outputs.ForEach(c => NewWireStates[c] = false);
-        parent.Buslines.ForEach(c => NewWireStates[c] = false);
+        parent.Inputs.ForEach(c => NewWireStates[RemoveHigh(c)] = StartHigh(c));
+        parent.Outputs.ForEach(c => NewWireStates[RemoveHigh(c)] = StartHigh(c));
+        parent.Buslines.ForEach(c => NewWireStates[RemoveHigh(c)] = StartHigh(c));
         parent.Connections.ToList().ForEach(c => Connections.Add(new ChipConnectionInstance()
         {
             Chip = new ChipInstance(ChipDefinition.AllChips[c.TargetChip]),
             Parent = c
         }));
         Swap();
+    }
+
+    private static bool StartHigh(string name)
+    {
+        return name.EndsWith("_HIGH");
+    }
+    public static string RemoveHigh(string name)
+    {
+        if (StartHigh(name)) return name.Replace("_HIGH", "");
+        return name;
     }
 
     public void Swap()
@@ -46,6 +56,8 @@ public class ChipInstance
         {
             sb.Append(kv.Key);
             sb.Append(": ");
+            sb.Append(this.WireStates[kv.Key] ? "HIGH" : "LOW");
+            sb.Append(" -> ");
             sb.AppendLine(kv.Value ? "HIGH" : "LOW");
         }
         return sb.ToString();
