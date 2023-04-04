@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp6.0</TargetFramework>
-		<StartupObject>Program</StartupObject>
+    <TargetFramework>netcoreapp7.0</TargetFramework>
+		<StartupObject>Logically.Program</StartupObject>
     <LangVersion>Preview</LangVersion>
   </PropertyGroup>
   

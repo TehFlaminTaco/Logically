@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+namespace Logically;
+
 public class ChipDefinition
 {
-    public static Dictionary<string, ChipDefinition> AllChips = new();
+    public static readonly Dictionary<string, ChipDefinition> AllChips = new();
 
     public string Name;
 
@@ -40,7 +43,7 @@ public class ChipDefinition
     public override string ToString()
     {
         StringBuilder sb = new();
-        sb.Append("@"); sb.AppendLine(Name);
+        sb.Append('@'); sb.AppendLine(Name);
         sb.Append("I:"); sb.AppendLine(System.String.Join(", ", this.Inputs));
         sb.Append("O:"); sb.AppendLine(System.String.Join(", ", this.Outputs));
         sb.Append("B:"); sb.AppendLine(System.String.Join(", ", this.Buslines));
@@ -163,5 +166,14 @@ public class WriteChip : ChipDefinition
             }
         }
         return outputs;
+    }
+}
+
+public class CopyChip : ChipDefinition
+{
+    public CopyChip() : base("COPY") { }
+    public override List<bool> Think(ChipInstance instance, List<bool> inputs)
+    {
+        return inputs;
     }
 }

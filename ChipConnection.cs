@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+
+namespace Logically;
+
 public struct ChipConnection
 {
     public string TargetChip;
