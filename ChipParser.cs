@@ -1,21 +1,26 @@
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Linq;
+
+namespace Logically;
+
 public class ChipParser
 {
-    public static Regex ChipRegex = new Regex(@"@(?<ChipName>\w+)\n
+    private static readonly Regex ChipRegex = new(@"@(?<ChipName>\w+)\n
 (?<IOB>(?:.*:[^:;]*;?\n?)*)
 (?<Wires>(?:[^@](?!\n+@))*.?)", RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace);
-    public static Regex IOBRegex = new Regex(@"(?<Type>\w*):[ \t]*(?<Value>[^:;]*)");
-    public static Regex ConnectionRegex = new Regex(@"(?<Chip>\w+)[ \t]*
+    private static readonly Regex IOBRegex = new(@"(?<Type>\w*):[ \t]*(?<Value>[^:;]*)");
+    private static readonly Regex ConnectionRegex = new(@"(?<Chip>\w+)[ \t]*
 \((?<InputWires>[^)]*)\)\s*
 \((?<OutputWires>[^)]*)\)", RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace);
-    public static Regex WireNames = new Regex(@"\w+");
+    private static readonly Regex WireNames = new(@"\w+");
 
     public static ChipDefinition ParseChips(string s)
     {
+        s = s.Replace("\r", ""); // Remove all \r characters, as they are not needed
         ChipDefinition mainByName = null;
         ChipDefinition last = null;
-        foreach (Match chipMatch in ChipRegex.Matches(s))
+        foreach (Match chipMatch in ChipRegex.Matches(s).Cast<Match>())
         {
             ChipDefinition chipDef = new(chipMatch.Groups["ChipName"].Value);
 
@@ -25,7 +30,7 @@ public class ChipParser
             List<List<string>> AllLines = new();
             if (chipMatch.Groups.ContainsKey("IOB"))
             {
-                foreach (Match iobMatch in IOBRegex.Matches(chipMatch.Groups["IOB"].Value))
+                foreach (Match iobMatch in IOBRegex.Matches(chipMatch.Groups["IOB"].Value).Cast<Match>())
                 {
                     string type = iobMatch.Groups["Type"].Value.ToLower();
                     List<string> wires = ParseWireGroup(iobMatch.Groups["Value"].Value);
@@ -39,7 +44,7 @@ public class ChipParser
             {
                 if (Inputs == null) Inputs = wires;
                 else if (Outputs == null) Outputs = wires;
-                else if (BusLines == null) BusLines = wires;
+                else BusLines ??= wires;
             }
             chipDef.Inputs = Inputs ?? new();
             chipDef.Outputs = Outputs ?? new();
@@ -61,12 +66,27 @@ public class ChipParser
         return main;
     }
 
+    private static readonly Regex ManyWire = new(@"^(?<Count>\d+)(?<Name>\w+)");
     public static List<string> ParseWireGroup(string s)
     {
         List<string> wires = new();
-        foreach (Match wireMatch in WireNames.Matches(s))
+        foreach (Match wireMatch in WireNames.Matches(s).Cast<Match>())
         {
-            wires.Add(wireMatch.Value);
+            string wireName = wireMatch.Value;
+            if (ManyWire.IsMatch(wireName))
+            {
+                Match manyMatch = ManyWire.Match(wireName);
+                int count = int.Parse(manyMatch.Groups["Count"].Value);
+                string name = manyMatch.Groups["Name"].Value;
+                for (int i = 0; i < count; i++)
+                {
+                    wires.Add($"_{i}{name}");
+                }
+            }
+            else
+            {
+                wires.Add(wireMatch.Value);
+            }
         }
         return wires;
     }
@@ -74,7 +94,7 @@ public class ChipParser
     public static HashSet<ChipConnection> ParseConnections(string s)
     {
         HashSet<ChipConnection> connections = new();
-        foreach (Match connMatch in ConnectionRegex.Matches(s))
+        foreach (Match connMatch in ConnectionRegex.Matches(s).Cast<Match>())
         {
             connections.Add(new ChipConnection()
             {

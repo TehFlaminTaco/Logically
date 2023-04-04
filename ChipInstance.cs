@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+namespace Logically;
+
 public class ChipInstance
 {
     public ChipDefinition Parent;
@@ -11,7 +14,7 @@ public class ChipInstance
 
     public ChipInstance(ChipDefinition parent)
     {
-        this.Parent = parent;
+        Parent = parent;
         parent.Inputs.ForEach(c => NewWireStates[c] = false);
         parent.Outputs.ForEach(c => NewWireStates[c] = false);
         parent.Buslines.ForEach(c => NewWireStates[c] = false);
@@ -20,7 +23,7 @@ public class ChipInstance
             Chip = new ChipInstance(ChipDefinition.AllChips[c.TargetChip]),
             Parent = c
         }));
-        this.Swap();
+        Swap();
     }
 
     public void Swap()
@@ -37,7 +40,7 @@ public class ChipInstance
     public override string ToString()
     {
         StringBuilder sb = new();
-        sb.Append("@");
+        sb.Append('@');
         sb.AppendLine(Parent.Name);
         foreach (var kv in this.NewWireStates)
         {
