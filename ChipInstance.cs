@@ -9,7 +9,6 @@ public class ChipInstance
     public ChipDefinition Parent;
     public Dictionary<string, bool> WireStates = new();
     public Dictionary<string, bool> NewWireStates = new();
-
     public HashSet<ChipConnectionInstance> Connections = new();
 
     public ChipInstance(ChipDefinition parent)
@@ -46,6 +45,19 @@ public class ChipInstance
         {
             chipConnInst.Chip.Swap();
         }
+    }
+    public bool Satisfied()
+    {
+        foreach (var kv in NewWireStates)
+        {
+            if (!WireStates.ContainsKey(kv.Key)) return false;
+            if (WireStates[kv.Key] != kv.Value) return false;
+        }
+        foreach (var chipConnInst in Connections)
+        {
+            if (!chipConnInst.Chip.Satisfied()) return false;
+        }
+        return true;
     }
     public override string ToString()
     {

@@ -97,8 +97,12 @@ public class HaltChip : ChipDefinition
     public HaltChip() : base("HALT") { }
     public override List<bool> Think(ChipInstance instance, List<bool> inputs)
     {
-        if (inputs.Count > 0 && inputs[0]) Program.Running = false;
-        return inputs;
+        if (inputs.Count > 0 && inputs[0])
+        {
+            Program.Running = false;
+            return inputs;
+        }
+        return new();
     }
 }
 public class ReadChip : ChipDefinition
@@ -207,4 +211,18 @@ public class CellChip : ChipDefinition
         return outputs;
     }
 
+}
+
+public class RandomChip : ChipDefinition
+{
+    static System.Random rng = new();
+    public RandomChip() : base("RAND") { }
+    public override List<bool> Think(ChipInstance instance, List<bool> outputs)
+    {
+        for (int i = 0; i < 64; i++)
+        {
+            outputs.Add(rng.Next() % 2 == 1);
+        }
+        return outputs;
+    }
 }

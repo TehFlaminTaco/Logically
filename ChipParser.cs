@@ -6,7 +6,7 @@ namespace Logically;
 
 public class ChipParser
 {
-    private static readonly Regex ChipRegex = new(@"@(?<ChipName>\w+)\n
+    private static readonly Regex ChipRegex = new(@"@(?<ChipName>\w+)\n?
 (?<IOB>(?:.*:[^:;]*;?\n?)*)
 (?<Wires>(?:[^@](?!\n+@))*.?)", RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace);
     private static readonly Regex IOBRegex = new(@"(?<Type>\w*):[ \t]*(?<Value>[^:;]*)");

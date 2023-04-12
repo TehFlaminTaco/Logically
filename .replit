@@ -1,4 +1,4 @@
-run = "dotnet run"
+run = "dotnet run test.l /ib /ob /l10 24 72"
 entrypoint = "main.cs"
 
 hidden = ["bin", "obj"]

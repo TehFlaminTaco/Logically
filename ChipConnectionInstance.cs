@@ -14,9 +14,10 @@ public class ChipConnectionInstance
         List<bool> inputs = new();
         for (var i = 0; i < Parent.InputWires.Count; i++)
         {
-            if (Parent.InputWires[i].ToLower() == "high" || Parent.InputWires[i].ToLower() == "h")
+            var inLow = Parent.InputWires[i].ToLower();
+            if (inLow == "high" || inLow == "h" || inLow == "1")
                 inputs.Add(true);
-            else if (Parent.InputWires[i].ToLower() == "low" || Parent.InputWires[i].ToLower() == "l")
+            else if (inLow == "low" || inLow == "l" || inLow == "0")
                 inputs.Add(false);
             else
                 inputs.Add(chip.WireStates[Parent.InputWires[i]]);
@@ -24,6 +25,7 @@ public class ChipConnectionInstance
         List<bool> outputs = Chip.Parent.Think(Chip, inputs);
         for (var i = 0; i < System.Math.Min(outputs.Count, Parent.OutputWires.Count); i++)
         {
+            if (Parent.OutputWires[i] == "_") continue;
             chip.NewWireStates[Parent.OutputWires[i]] = outputs[i];
         }
     }
